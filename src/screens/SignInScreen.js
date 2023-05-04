@@ -5,13 +5,18 @@ import Input, {
   ReturnKeyTypes,
 } from '../components/Input';
 import SafeInputView from '../components/SafeInputView';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Button from '../components/Button';
 
 const SignInScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const passwordRef = useRef(null);
+  const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    setDisabled(!email || !password);
+  }, [email, password]);
 
   const onSubmit = () => {
     Keyboard.dismiss();
@@ -30,6 +35,7 @@ const SignInScreen = () => {
           value={email}
           onChangeText={(email) => setEmail(email.trim())}
           iconName={IconNames.EMAIL}
+          onSubmitEditing={() => passwordRef.current.focus()}
         />
         {/* When passing the 'secureTextEntry' key without a value, it defaults to true  */}
         <Input
@@ -43,7 +49,7 @@ const SignInScreen = () => {
           onSubmitEditing={onSubmit}
         />
         <View style={styles.buttonContainer}>
-          <Button title="Login" onPress={onSubmit} />
+          <Button title="Login" onPress={onSubmit} disabled={disabled} />
         </View>
       </View>
     </SafeInputView>
